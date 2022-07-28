@@ -1,0 +1,20 @@
+{
+	"name": "store",
+	"version": "1.0.0",
+	"description": "",
+	"main": "app.js",
+	"scripts": {
+		"start": "nodemon app.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Hajitsu/store.git"
+	},
+	"keywords": [],
+	"author": "hajitsu",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Hajitsu/store/issues"
+	},
+	"homepage": "https://github.com/Hajitsu/store#readme"
+}
