@@ -4,10 +4,10 @@ const Schema = new Schema(
 	{
 		first_name: { type: String },
 		last_name: { type: String },
-		username: { type: String },
+		username: { type: String, required: true, lowercase: true },
 		password: { type: String },
 		mobile: { type: String },
-		email: { type: String },
+		email: { type: String, required: true, lowercase: true },
 		otp: {
 			type: Object,
 			default: {
