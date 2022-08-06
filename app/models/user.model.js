@@ -1,18 +1,18 @@
 const { defaul: mongoose, Schema, model } = require('mongoose');
 
-const Schema = new Schema(
+const schema = new Schema(
 	{
-		first_name: { type: String },
-		last_name: { type: String },
-		username: { type: String, required: true, lowercase: true },
+		firstame: { type: String },
+		lastname: { type: String },
+		username: { type: String, lowercase: true },
 		password: { type: String },
-		mobile: { type: String },
-		email: { type: String, required: true, lowercase: true },
+		mobile: { type: String, required: true },
+		email: { type: String, lowercase: true },
 		otp: {
 			type: Object,
 			default: {
 				code: 0,
-				expire_in: new Date().getDate() + 120,
+				expiresIn: 0,
 			},
 		},
 		bills: { type: [], default: [] },
@@ -26,5 +26,5 @@ const Schema = new Schema(
 );
 
 module.exports = {
-	UserModel: mongoose.model('user', Schema),
+	UserModel: model('user', schema),
 };

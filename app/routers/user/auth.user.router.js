@@ -2,7 +2,8 @@ const { AuthUserController } = require('../../http/controllers/user/auth/auth.us
 
 const router = require('express').Router();
 
-router.post('/login', AuthUserController.login);
+router.post('/get-otp', AuthUserController.getOTP);
+router.post('/check-otp', AuthUserController.checkOTP);
 
 module.exports = {
 	AuthUserRoutes: router,
