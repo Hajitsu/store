@@ -2,6 +2,11 @@ const express = require('express');
 const path = require('path');
 const { default: mongoose } = require('mongoose');
 const { AllRoutes } = require('./routers/router');
+const morgan = require('morgan');
+const createHttpError = require('http-errors');
+const swaggerUI = require('swagger-ui-express');
+const swaggerJSDoc = require('swagger-jsdoc');
+const cors = require('cors');
 
 module.exports = class Application {
 	#app = express();
@@ -19,9 +24,34 @@ module.exports = class Application {
 	}
 
 	configApplication() {
-		this.#app.use(express.json());
+		this.#app.use(cors());
+		this.#app.use(morgan('dev'));
 		this.#app.use(express.urlencoded({ extended: true }));
+		this.#app.use(express.json());
 		this.#app.use(express.static(path.join(__dirname, '..', 'public')));
+		this.#app.use(
+			'/api-doc',
+			swaggerUI.serve,
+			swaggerUI.setup(
+				swaggerJSDoc({
+					swaggerDefinition: {
+						openapi: '3.0.0',
+						info: {
+							title: 'Hajitsu Store',
+							version: '1.0.0',
+							description: 'development store',
+						},
+						servers: [
+							{
+								url: 'http://localhost:1414',
+							},
+						],
+					},
+
+					apis: ['./app/routers/**/*.js'],
+				})
+			)
+		);
 	}
 
 	createServer() {
@@ -32,9 +62,24 @@ module.exports = class Application {
 	}
 
 	connectToMongo() {
-		mongoose.connect(this.#DB_URI, (error) => {
-			if (!error) return console.info(`mongo started at ${this.#DB_URI}`);
-			return console.info(`mongo failed to connect at ${this.#DB_URI}`);
+		mongoose.connect(this.#DB_URI);
+
+		mongoose.connection.on('connected', () => {
+			console.info(`mongo started at ${this.#DB_URI}`);
+		});
+		mongoose.connection.on('disconnected', () => {
+			console.warn(`mongo disconnected from ${this.#DB_URI}`);
+		});
+		mongoose.connection.on('error', (error) => {
+			console.error(`mongo failed to connect at ${this.#DB_URI}`);
+			console.error(error.message);
+		});
+
+		process.on('SIGINT', () => {
+			mongoose.connection.close(() => {
+				console.log('Mongoose default connection disconnected through app termination');
+				process.exit(0);
+			});
 		});
 	}
 
@@ -44,18 +89,18 @@ module.exports = class Application {
 
 	errorHandling() {
 		this.#app.use((req, res, next) => {
-			return res.status(404).json({
-				statusCode: 404,
-				message: 'آدرس مورد نظر یافت نشد',
-			});
+			next(createHttpError.NotFound('آدرس مورد نظر یافت نشد'));
 		});
 		this.#app.use((err, req, res, next) => {
-			const statusCode = err.status || 500;
-			const message = err.message || 'Internal Server Error';
+			const internalServerError = createHttpError.InternalServerError();
+			const statusCode = err.status || internalServerError.status;
+			const message = err.message || internalServerError.message;
 
 			return res.status(statusCode).json({
-				statusCode,
-				message,
+				errors: {
+					statusCode,
+					message,
+				},
 			});
 		});
 	}

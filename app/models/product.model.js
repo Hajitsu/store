@@ -1,0 +1,44 @@
+const { defaul: mongoose, Schema, model } = require('mongoose');
+
+const Schema = new Schema(
+	{
+		title: { type: String, required: true },
+		summary: { type: String, required: true },
+		description: { type: String, required: true },
+		images: { type: [String], required: true },
+		tags: { type: [String], required: true },
+		category: { type: mongoose.Types.ObjectId, required: true },
+		comments: { type: [], default: [] },
+		like: { type: [mongoose.Types.ObjectId], default: [] },
+		dislike: { type: [mongoose.Types.ObjectId], default: [] },
+		bookmark: { type: [mongoose.Types.ObjectId], default: [] },
+		price: { type: Number, default: 0 },
+		discount: { type: Number, default: 0 },
+		count: { type: Number },
+		type: { type: String, required: true },
+		time: { type: String },
+		format: { type: String },
+		teacher: { type: mongoose.Types.ObjectId },
+		features: {
+			type: Object,
+			default: {
+				length: '',
+				height: '',
+				width: '',
+				wight: '',
+				colors: [],
+				models: [],
+				made_in: '',
+			},
+		},
+		bookmark: { type: String, required: true },
+		bookmark: { type: String, required: true },
+	},
+	{
+		timestamp: true,
+	}
+);
+
+module.exports = {
+	ProductModel: mongoose.model('product', Schema),
+};
