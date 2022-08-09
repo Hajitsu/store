@@ -5,7 +5,6 @@ const Controller = require('../controller');
 module.exports = new (class HomeController extends Controller {
 	async homePage(req, res, next) {
 		try {
-			const result = await authSchema.validateAsync(req.body);
 			return res.status(200).send('.: Welcome To The Hajitsu Land :.');
 		} catch (error) {
 			next(createHttpError.BadRequest(error.message));
