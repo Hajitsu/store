@@ -42,8 +42,21 @@ function signRefreshToken(userId) {
 	});
 }
 
+function verifyRefreshToken(token) {
+	return new Promise((resolve, reject) => {
+		jwt.verify(token, REFRESH_TOKEN_SECRET_KEY, async (err, payload) => {
+			if (err) reject(createHttpError.Unauthorized('وارد حساب خود شوید' + err.message));
+			const { mobile } = payload || {};
+			const user = await UserModel.findOne({ mobile }, { password: 0, token: 0, otp: 0, __v: 0 });
+			if (!user) reject(createHttpError.Unauthorized('حساب کاربری یافت نشد'));
+			resolve(mobile);
+		});
+	});
+}
+
 module.exports = {
 	generateRandomNumber,
 	signAccessToken,
 	signRefreshToken,
+	verifyRefreshToken,
 };
