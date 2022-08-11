@@ -18,6 +18,7 @@ module.exports = class Application {
 
 		this.configApplication();
 		this.connectToMongo();
+		this.initRedis();
 		this.createServer();
 		this.createRoutes();
 		this.errorHandling();
@@ -81,6 +82,10 @@ module.exports = class Application {
 				process.exit(0);
 			});
 		});
+	}
+
+	initRedis() {
+		require('./utils/redisClient');
 	}
 
 	createRoutes() {
