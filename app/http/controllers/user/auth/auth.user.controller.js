@@ -7,7 +7,7 @@ const {
 } = require('../../../../utils/functions');
 const { getOTPValidator, checkOTPValidator } = require('../../../validators/user/auth.schema.validator');
 const { UserModel } = require('../../../../models/user.model');
-const { USER_ROLE, EXPIRES_IN } = require('../../../../utils/constants');
+const { ROLES } = require('../../../../utils/constants');
 const Controller = require('../../controller');
 
 class AuthUserController extends Controller {
@@ -84,7 +84,7 @@ class AuthUserController extends Controller {
 		return !!(await UserModel.create({
 			mobile,
 			otp,
-			Roles: [USER_ROLE],
+			Roles: [ROLES.USER],
 		}));
 	}
 
